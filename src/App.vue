@@ -1,26 +1,220 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <header><p>todos</p></header>
+  <div>
+    <button>✔</button>
+    <input type="text" placeholder="해야 할 일을 입력해주세요." v-model="enteredTodoValue" @keyup.enter="addTodos" />
+  </div>
+  <p v-if="todos.length === 0">추가된 할 일이 없습니다.</p>
+  <ul v-else>
+    <todo-input
+    v-for="(todo, index) in todos" 
+    :key="index" 
+    :list="todo" 
+    :todo-check="false"
+    @todo-checked="todoCheckedStatus"
+    ></todo-input>
+  </ul>
+  <div>
+    <span>3 items left</span>
+    <button>All</button>
+    <button>Active</button>
+    <button>Completed</button>
+    <button>Clear Completed</button>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      enteredTodoValue: "",
+      todos: [],
+    };
+  },
+  methods: {
+    addTodos() {
+      this.todos.push(this.enteredTodoValue);
+      this.enteredTodoValue = "";
+    },
+    todoCheckedStatus() {
+      
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html {
+	height: 100%;
+}
+
+body {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    background-color: #F5F5F5;
+    min-height: 100%;
+}
+
+.todo-wrapper {
+    justify-content: center;
+    margin-top: 3rem;
+    min-width: 600px;
+}
+
+header, .todo-title {
+    padding: 2rem;
+    text-align: center;
+    color: rosybrown;
+    font-size: 5rem;
+}
+
+.todo-box {
+    background-color: white;
+    border: 1px solid #ddd;
+}
+
+.todo-input-box {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    height: 3rem;
+    border-bottom: 1px solid #ddd;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+button {
+    background-color: transparent;
+    border: 0;
+}
+
+.complete-all-btn {
+    color: gray;
+    min-width: none;
+    min-height: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0.5rem 0.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    
+}
+
+.complete-all-btn.checked {
+    color: green
+}
+
+.todo-input {
+    width: 80%;
+    text-align: center;
+    border: 0;
+    outline: none;
+    font-size: 1.3rem;
+}
+
+.todo-item {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.todo-item:hover .delBtn {
+    opacity: 1;
+}
+
+.checkbox {
+    min-width: none;
+    min-height: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0.5rem 0.5rem;
+    border-radius: 50px;
+    border: 1px solid lightgray;
+    cursor: pointer;
+    text-align: center;
+}
+
+.todo-item.checked .checkbox{
+    border: 2px solid darkgray;
+    color: green;
+}
+
+.todo {
+    font-size: 1.3rem;
+    padding: 0 1rem;
+    width: 80%;
+}
+
+.todo-item.checked .todo{
+ font-style: italic;
+ text-decoration: line-through;
+ color: lightgray;
+}
+
+.delBtn {
+    opacity: 1;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    font-weight: lighter;
+    cursor: pointer;
+}
+
+.todo-bottom {
+    height: 3rem;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.button-group{
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.button-group button {
+    border: 1px solid #eee;
+    padding: 0.2rem 0.5rem;
+    margin: 0 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.button-group button.selected {
+    border: 2px solid rosybrown;
+    padding: 0.2rem 0.5rem;
+    margin: 0 0.5rem;
+    border-radius: 8px;
+}
+
+.clear-completed-btn:hover {
+    font-style: italic;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.edit-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 590px;
+    height: 2.8rem;
+    margin: 0;
+}
+
+p.info {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: #ccc;
 }
 </style>
