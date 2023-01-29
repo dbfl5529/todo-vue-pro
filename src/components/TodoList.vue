@@ -1,5 +1,5 @@
 <template>
-  <li class="todo-item" :class="{checked: todoCheck}">
+  <li class="todo-item" :class="{checked: isCompleted}">
     <div class="checkbox" @click="todoChecked">{{ result }}</div>
     <div class="todo-text">{{ list }}</div>
     <button class="delBtn" @click="remove">x</button>
@@ -12,9 +12,9 @@ export default {
   props: [
     'id',
     'list',
-    'todoCheck'
+    'isCompleted'
   ],
-  emits: ['remove'],
+  emits: ['todo-checked', 'remove'],
   data() {
     return {
     }
@@ -24,7 +24,7 @@ export default {
       this.$emit('todo-checked', this.id);
     },
     result() {
-        if(this.todoCheck === true) {
+        if(this.isCompleted === true) {
             return '?';
         } else {
             return '';

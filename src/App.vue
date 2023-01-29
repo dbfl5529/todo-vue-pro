@@ -1,15 +1,18 @@
 <template>
   <header><p>todos</p></header>
   <div class="todo-box">
-  <todo-input @add-todo="addTodo"></todo-input>
-  <p v-if="todos.length === 0">Ï∂îÍ∞ÄÎêú Ìï† ÏùºÏù¥ ÏóÜÏäµÎãàÎã§.</p>
+  <todo-input 
+    @add-todo="addTodo"
+    @all-checked="allCheckedStatus"
+    ></todo-input>
+  <p v-if="todos.length === 0">√ﬂ∞°µ» «“ ¿œ¿Ã æ¯Ω¿¥œ¥Ÿ.</p>
   <ul v-else>
     <todo-list
     v-for="todo in todos" 
     :key="todo.id"
     :id="todo.id" 
     :list="todo.list" 
-    :todo-check="todo.todoCheck"
+    :is-completed="todo.isCompleted"
     @todo-checked="todoCheckedStatus"
     @remove="removeTodo"
     ></todo-list>
@@ -24,7 +27,7 @@
     <button class="clear-completed-btn">Clear Completed</button>
   </div>
   </div>
-  <p class="info">ÎçîÎ∏îÌÅ¥Î¶≠ Ïãú ÏàòÏ†ï Í∞ÄÎä•!</p>
+  <p class="info">¥ı∫Ì≈¨∏Ø Ω√ ºˆ¡§ ∞°¥…!</p>
 </template>
 
 <script>
@@ -34,12 +37,17 @@ export default {
       todos: [],
     };
   },
+  provide() {
+    return {
+        todos: this.todos
+    }
+  },
   methods: {
     addTodo(list) {
         const newTodo = {
             id: new Date().toISOString(),
             list: list,
-            todoCheck: false,
+            isCompleted: false,
         };
         this.todos.push(newTodo);
     },
@@ -47,10 +55,17 @@ export default {
       const identifiedTodo = this.todos.find(
         (todo) => todo.id === todoId
       );
-      identifiedTodo.todoCheck = !identifiedTodo.todoCheck;
+      identifiedTodo.isCompleted = !identifiedTodo.isCompleted;
     },
     removeTodo(todoId) {
         this.todos = this.todos.filter((todo) => todo.id !== todoId);
+    },
+    allCheckedStatus(allCheck) {
+        if(allCheck === true) {
+            this.todos.map((todo) => todo.isCompleted = true);
+        } else {
+            this.todos.map((todo) => todo.isCompleted = false);
+        }
     }
   }
 };
@@ -58,11 +73,9 @@ export default {
 
 <style>
 @import './assets/css/reset.css';
-
 html {
 	height: 100%;
 }
-
 body {
     display: flex;
     flex-wrap: nowrap;
@@ -70,20 +83,17 @@ body {
     background-color: #F5F5F5;
     min-height: 100%;
 }
-
 #app {
     justify-content: center;
     margin-top: 3rem;
     min-width: 600px;
 }
-
 header p {
     padding: 2rem;
     text-align: center;
     color: rosybrown;
     font-size: 5rem;
 }
-
 p {
     padding: 27px;
     text-align: center;
@@ -91,12 +101,10 @@ p {
     color: grey;
     
 }
-
 .todo-box {
     background-color: white;
     border: 1px solid #ddd;
 }
-
 .todo-input-box {
     display: flex;
     flex-wrap: nowrap;
@@ -106,12 +114,10 @@ p {
     justify-content: flex-start;
     align-items: center;
 }
-
 button {
     background-color: transparent;
     border: 0;
 }
-
 .complete-all-btn {
     color: gray;
     min-width: none;
@@ -124,11 +130,9 @@ button {
     font-size: 1.2rem;
     
 }
-
 .complete-all-btn.checked {
     color: green
 }
-
 .todo-input-text {
     width: 80%;
     text-align: center;
@@ -136,7 +140,6 @@ button {
     outline: none;
     font-size: 1.3rem;
 }
-
 .todo-item {
     position: relative;
     display: flex;
@@ -147,11 +150,9 @@ button {
     height: 3rem;
     border-bottom: 1px solid #ddd;
 }
-
 .todo-item:hover .delBtn {
     opacity: 1;
 }
-
 .checkbox {
     min-width: none;
     min-height: none;
@@ -163,24 +164,20 @@ button {
     cursor: pointer;
     text-align: center;
 }
-
 .todo-item.checked .checkbox {
     border: 2px solid darkgray;
     color: green;
 }
-
 .todo-text {
     font-size: 1.3rem;
     padding: 0 1rem;
     width: 80%;
 }
-
 .todo-item.checked .todo-text {
  font-style: italic;
  text-decoration: line-through;
  color: lightgray;
 }
-
 .delBtn {
     opacity: 1;
     width: 3rem;
@@ -189,7 +186,6 @@ button {
     font-weight: lighter;
     cursor: pointer;
 }
-
 .todo-bottom {
     height: 3rem;
     display: flex;
@@ -199,12 +195,10 @@ button {
     align-items: center;
     padding: 0 1rem;
 }
-
 .button-group{
     flex-direction: row;
     flex-wrap: nowrap;
 }
-
 .button-group button {
     border: 1px solid #eee;
     padding: 0.2rem 0.5rem;
@@ -212,20 +206,17 @@ button {
     border-radius: 8px;
     cursor: pointer;
 }
-
 .button-group button.selected {
     border: 2px solid rosybrown;
     padding: 0.2rem 0.5rem;
     margin: 0 0.5rem;
     border-radius: 8px;
 }
-
 .clear-completed-btn:hover {
     font-style: italic;
     text-decoration: underline;
     cursor: pointer;
 }
-
 .edit-input {
     position: absolute;
     left: 0;
@@ -234,7 +225,6 @@ button {
     height: 2.8rem;
     margin: 0;
 }
-
 .info {
     margin-top: 1.5rem;
     text-align: center;
