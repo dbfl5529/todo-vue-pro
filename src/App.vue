@@ -1,49 +1,64 @@
 <template>
   <header><p>todos</p></header>
-  <div>
-    <button>✔</button>
-    <input type="text" placeholder="해야 할 일을 입력해주세요." v-model="enteredTodoValue" @keyup.enter="addTodos" />
-  </div>
+  <div class="todo-box">
+  <todo-input @add-todo="addTodo"></todo-input>
   <p v-if="todos.length === 0">추가된 할 일이 없습니다.</p>
   <ul v-else>
-    <todo-input
-    v-for="(todo, index) in todos" 
-    :key="index" 
-    :list="todo" 
-    :todo-check="false"
+    <todo-list
+    v-for="todo in todos" 
+    :key="todo.id"
+    :id="todo.id" 
+    :list="todo.list" 
+    :todo-check="todo.todoCheck"
     @todo-checked="todoCheckedStatus"
-    ></todo-input>
+    @remove="removeTodo"
+    ></todo-list>
   </ul>
-  <div>
+  <div class="todo-bottom">
     <span>3 items left</span>
-    <button>All</button>
-    <button>Active</button>
-    <button>Completed</button>
-    <button>Clear Completed</button>
+    <div class="button-group">
+        <button class="show-all">All</button>
+        <button>Active</button>
+        <button>Completed</button>
+    </div>
+    <button class="clear-completed-btn">Clear Completed</button>
   </div>
+  </div>
+  <p class="info">더블클릭 시 수정 가능!</p>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      enteredTodoValue: "",
       todos: [],
     };
   },
   methods: {
-    addTodos() {
-      this.todos.push(this.enteredTodoValue);
-      this.enteredTodoValue = "";
+    addTodo(list) {
+        const newTodo = {
+            id: new Date().toISOString(),
+            list: list,
+            todoCheck: false,
+        };
+        this.todos.push(newTodo);
     },
-    todoCheckedStatus() {
-      
+    todoCheckedStatus(todoId) {
+      const identifiedTodo = this.todos.find(
+        (todo) => todo.id === todoId
+      );
+      identifiedTodo.todoCheck = !identifiedTodo.todoCheck;
+    },
+    removeTodo(todoId) {
+        this.todos = this.todos.filter((todo) => todo.id !== todoId);
     }
   }
 };
 </script>
 
 <style>
+@import './assets/css/reset.css';
+
 html {
 	height: 100%;
 }
@@ -56,17 +71,25 @@ body {
     min-height: 100%;
 }
 
-.todo-wrapper {
+#app {
     justify-content: center;
     margin-top: 3rem;
     min-width: 600px;
 }
 
-header, .todo-title {
+header p {
     padding: 2rem;
     text-align: center;
     color: rosybrown;
     font-size: 5rem;
+}
+
+p {
+    padding: 27px;
+    text-align: center;
+    font-size: 20px;
+    color: grey;
+    
 }
 
 .todo-box {
@@ -106,7 +129,7 @@ button {
     color: green
 }
 
-.todo-input {
+.todo-input-text {
     width: 80%;
     text-align: center;
     border: 0;
@@ -141,18 +164,18 @@ button {
     text-align: center;
 }
 
-.todo-item.checked .checkbox{
+.todo-item.checked .checkbox {
     border: 2px solid darkgray;
     color: green;
 }
 
-.todo {
+.todo-text {
     font-size: 1.3rem;
     padding: 0 1rem;
     width: 80%;
 }
 
-.todo-item.checked .todo{
+.todo-item.checked .todo-text {
  font-style: italic;
  text-decoration: line-through;
  color: lightgray;
@@ -212,7 +235,7 @@ button {
     margin: 0;
 }
 
-p.info {
+.info {
     margin-top: 1.5rem;
     text-align: center;
     color: #ccc;
