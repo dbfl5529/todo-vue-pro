@@ -18,7 +18,13 @@
         @update-todo="updateTodoList"
       ></todo-list>
     </ul>
-    <todo-button></todo-button>
+    <todo-button
+      :left-Item="leftItem"
+      @left-todos="leftTodosNum"
+      @list-all="showAll"
+      @list-active="showActive"
+      @list-completed="showCompleted"
+    ></todo-button>
   </div>
   <p class="info">더블클릭 시 수정 가능!</p>
 </template>
@@ -28,6 +34,7 @@ export default {
   data() {
     return {
       todos: [],
+      btnTodos: [],
     };
   },
   provide() {
@@ -61,6 +68,31 @@ export default {
     updateTodoList(edit) {
       const todo = this.todos.find((todo) => todo.id === edit.id);
       todo.list = edit.list;
+    },
+    // leftTodosNum(num) {
+    //   const leftItems = this.todos.filter((todo) => todo.isCompleted === false);
+    //   return leftItems.length;
+    // },
+    // 전체
+    showAll() {
+      this.todos;
+    },
+    // 완료 x
+    showActive() {
+      const activeTodo = this.todos.filter(
+        (todo) => todo.isCompleted === false
+      );
+      this.btnTodos = this.todos;
+      this.todos = activeTodo;
+      // 다시 todos를 돌려놔야하는데...
+    },
+    // 완료 된
+    showCompleted() {
+      const completedTodo = this.todos.filter(
+        (todo) => todo.isCompleted === true
+      );
+      this.btnTodos = this.todos;
+      this.todos = completedTodo;
     },
   },
 };
