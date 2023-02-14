@@ -18,13 +18,7 @@
         @update-todo="updateTodoList"
       ></todo-list>
     </ul>
-    <todo-button
-      :left-Item="leftItem"
-      @left-todos="leftTodosNum"
-      @list-all="showAll"
-      @list-active="showActive"
-      @list-completed="showCompleted"
-    ></todo-button>
+    <todo-button :num="leftItem" @list-type="showList"></todo-button>
   </div>
   <p class="info">더블클릭 시 수정 가능!</p>
 </template>
@@ -42,6 +36,12 @@ export default {
       todos: this.todos,
     };
   },
+  computed: {
+    leftItem() {
+      const leftItems = this.todos.filter((todo) => todo.isCompleted === false);
+      return leftItems.length;
+    },
+  },
   methods: {
     addTodo(list) {
       const newTodo = {
@@ -50,13 +50,16 @@ export default {
         isCompleted: false,
       };
       this.todos.push(newTodo);
+      this.init();
     },
     todoCheckedStatus(todoId) {
       const identifiedTodo = this.todos.find((todo) => todo.id === todoId);
       identifiedTodo.isCompleted = !identifiedTodo.isCompleted;
+      this.init();
     },
     removeTodo(todoId) {
       this.todos = this.todos.filter((todo) => todo.id !== todoId);
+      this.init();
     },
     allCheckedStatus(allCheck) {
       if (allCheck === true) {
@@ -64,35 +67,39 @@ export default {
       } else {
         this.todos.map((todo) => (todo.isCompleted = false));
       }
+      this.init();
     },
     updateTodoList(edit) {
       const todo = this.todos.find((todo) => todo.id === edit.id);
       todo.list = edit.list;
     },
-    // leftTodosNum(num) {
-    //   const leftItems = this.todos.filter((todo) => todo.isCompleted === false);
-    //   return leftItems.length;
-    // },
-    // 전체
-    showAll() {
-      this.todos;
+    showList(type) {
+      this.todos = this.btnTodos;
+      // 전체
+      if (type === "all") {
+        this.todos;
+        // 완료 X
+      } else if (type === "active") {
+        const activeTodo = this.todos.filter(
+          (todo) => todo.isCompleted === false
+        );
+        this.todos = activeTodo;
+        // 완료 O
+      } else if (type === "completed") {
+        const completedTodo = this.todos.filter(
+          (todo) => todo.isCompleted === true
+        );
+        this.todos = completedTodo;
+      } else {
+        const clearTodo = this.todos.filter(
+          (todo) => todo.isCompleted === false
+        );
+        this.todos = clearTodo;
+        this.init();
+      }
     },
-    // 완료 x
-    showActive() {
-      const activeTodo = this.todos.filter(
-        (todo) => todo.isCompleted === false
-      );
+    init() {
       this.btnTodos = this.todos;
-      this.todos = activeTodo;
-      // 다시 todos를 돌려놔야하는데...
-    },
-    // 완료 된
-    showCompleted() {
-      const completedTodo = this.todos.filter(
-        (todo) => todo.isCompleted === true
-      );
-      this.btnTodos = this.todos;
-      this.todos = completedTodo;
     },
   },
 };

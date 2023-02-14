@@ -1,60 +1,55 @@
 <template>
   <div class="todo-bottom">
-    <span>3 items left</span>
+    <span>{{ num }} items left</span>
     <div class="button-group">
-      <!-- <button @click="$emit('list-all')">All</button> -->
-      <button :class="{ selected: selectedA }" @click="listSelected('all')">
+      <button
+        :class="{ selected: selectedName === 'all' }"
+        @click="listSelected('all')"
+      >
         All
       </button>
-      <button :class="{ selected: selectedB }" @click="listSelected('active')">
+      <button
+        :class="{ selected: selectedName === 'active' }"
+        @click="listSelected('active')"
+      >
         Active
       </button>
       <button
-        :class="{ selected: selectedC }"
+        :class="{ selected: selectedName === 'completed' }"
         @click="listSelected('completed')"
       >
         Completed
       </button>
     </div>
-    <button class="clear-completed-btn">Clear Completed</button>
+    <button class="clear-completed-btn" @click="listSelected('clear')">
+      Clear Completed
+    </button>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["id", "list", "isCompleted"],
-  emits: ["list-all", "list-active", "list-complete"],
+  props: ["num"],
+  emits: ["list-type"],
   data() {
     return {
-      // toggleSelect: [],
-      selectedA: false,
-      selectedB: false,
-      selectedC: false,
+      selectedName: "all",
     };
   },
-  computed: {
-    // leftItem() {},
-  },
   methods: {
-    // leftTodos() {
-    //   this.$emit("left-todos", this.itemNum);
-    // },
     listSelected(btn) {
       if (btn === "all") {
-        this.$emit("list-all");
-        this.selectedA = true;
-        this.selectedB = false;
-        this.selectedC = false;
+        this.selectedName = "all";
+        this.$emit("list-type", this.selectedName);
       } else if (btn === "active") {
-        this.$emit("list-active");
-        this.selectedA = false;
-        this.selectedB = true;
-        this.selectedC = false;
+        this.selectedName = "active";
+        this.$emit("list-type", this.selectedName);
+      } else if (btn === "completed") {
+        this.selectedName = "completed";
+        this.$emit("list-type", this.selectedName);
       } else {
-        this.$emit("list-completed");
-        this.selectedA = false;
-        this.selectedB = false;
-        this.selectedC = true;
+        this.selectedName = "all";
+        this.$emit("list-type", "clear");
       }
     },
   },
