@@ -17,11 +17,12 @@
 
 <script>
 export default {
-  props: ["id", "list", "isCompleted"],
+  props: ["todos", "id", "list", "isCompleted"],
   emits: ["todo-checked", "update-todo", "remove"],
   data() {
     return {
       edit: {
+        // edit 데이터 관리
         list: "",
         id: "",
       },
